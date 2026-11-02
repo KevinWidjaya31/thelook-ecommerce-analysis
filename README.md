@@ -254,7 +254,7 @@ Dashboard terdiri dari empat halaman analisis.
 ### Executive Overview
 Menampilkan ringkasan performa bisnis dan indikator utama untuk memahami kondisi bisnis secara keseluruhan.
 
-![Executive Overview](pages/Executive Overview.png)
+![Executive Overview](pages/Executive-Overview.png)
 
 ### Product Analysis
 Menyajikan analisis performa produk, kategori, dan kontribusi penjualan.
@@ -269,7 +269,7 @@ Menyajikan informasi mengenai karakteristik pelanggan dan pola pembelian.
 ### Inventory & Distribution
 Menyajikan analisis kondisi persediaan dan distribusi inventory.
 
-![Inventory & Distribution](pages/Inventory & Distribution.png)
+![Inventory & Distribution](pages/Inventory-Distribution.png)
 
 ## 6. Business Insights & Recommendations
 
