@@ -1,0 +1,50 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["users","products","cleaned_items","cohort_retention","repeat_purchase_kpi","retention_by_traffic_source","DAX Measure","vw_executive_overview","vw_product_performance","vw_customer_retention","vw_inventory_distribution"]
+
+annotation PBI_ProTooling = ["MCP-PBIModeling","DevMode"]
+
+ref table users
+ref table DateTableTemplate_26948017-e90b-404e-bfb4-03b656480207
+ref table LocalDateTable_85e31a91-bca5-49f3-9a3d-dcf519a949eb
+ref table products
+ref table cleaned_items
+ref table LocalDateTable_cabbd58a-2e6c-4824-844d-b675fe454921
+ref table cohort_retention
+ref table LocalDateTable_0697b699-777f-40c7-96d0-faa6a5079fe9
+ref table repeat_purchase_kpi
+ref table LocalDateTable_d7b46ece-8e9c-4b74-89c4-8866ed09fda6
+ref table LocalDateTable_57420026-06bd-4ac7-b49b-a181a06fde62
+ref table retention_by_traffic_source
+ref table 'DAX Measure'
+ref table vw_executive_overview
+ref table LocalDateTable_d386dd32-e84a-44d6-b0e1-388a922d3cbd
+ref table LocalDateTable_2b34b7bb-71a2-4f9d-88d4-7530b74bd40f
+ref table LocalDateTable_a237dc09-0279-4f56-b5f1-e615b5c7cce0
+ref table LocalDateTable_3560eeae-681e-439b-8166-3d687f3bb6f5
+ref table LocalDateTable_79e21b28-9619-40b7-a6b7-1d55f67bab53
+ref table 'Dim Calendar'
+ref table vw_product_performance
+ref table LocalDateTable_26622b10-5d6a-4989-9bd4-4876b42e07da
+ref table LocalDateTable_491c80e3-4ebb-4e89-81d7-52769af585d7
+ref table vw_customer_retention
+ref table LocalDateTable_04a0ef09-1318-49a7-879b-dae22e7fa098
+ref table LocalDateTable_ecc2041f-2997-404e-85b5-2a9659eaffac
+ref table LocalDateTable_3e386f9b-b5c0-4338-9a94-d94eba53a08b
+ref table vw_inventory_distribution
+ref table LocalDateTable_1ec9fe89-55dd-4f7c-8f54-3eed392fcfe4
+ref table LocalDateTable_c042e310-5372-43b3-902d-a3e652b67adb
+ref table LocalDateTable_d089b434-6664-423b-80d7-3ea4275027f1
+ref table LocalDateTable_d2bc8912-a0a8-47c0-bef8-a28bcdf42b4f
+
+ref cultureInfo en-US
+

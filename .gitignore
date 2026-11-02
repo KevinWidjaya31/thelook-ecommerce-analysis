@@ -1,0 +1,18 @@
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+
+# Power BI temporary files
+**/.pbi/
+
+# Power BI binary file (gunakan PBIP sebagai source utama)
+*.pbix
+
+# Windows temporary files
+Thumbs.db
+Desktop.ini
+
+# macOS temporary files
+.DS_Store
+
+# Git
+.git/

@@ -1,0 +1,248 @@
+table vw_product_performance
+	lineageTag: 98a59459-0133-421d-a61d-97d8550cedc0
+
+	column order_item_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 57a6a6ee-edba-4d4d-bfd2-ca63c55e3918
+		summarizeBy: sum
+		sourceColumn: order_item_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_id
+		dataType: int64
+		formatString: 0
+		lineageTag: d8eb2092-49f4-4290-9c63-f7b72506711d
+		summarizeBy: sum
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column user_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 3558146c-e759-4ebb-9ee1-5fe353d0f3de
+		summarizeBy: sum
+		sourceColumn: user_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: int64
+		formatString: 0
+		lineageTag: bfcc2878-7df1-4710-89a8-e945718cf27f
+		summarizeBy: sum
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column inventory_item_id
+		dataType: int64
+		formatString: 0
+		lineageTag: df346b31-6305-4320-8573-b5cc7c052dda
+		summarizeBy: none
+		sourceColumn: inventory_item_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column item_status
+		dataType: string
+		lineageTag: 848c39b4-b4bf-48e7-a2c4-72a8640f5ce0
+		summarizeBy: none
+		sourceColumn: item_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_status
+		dataType: string
+		lineageTag: 4060a6cb-0ebc-4ccf-94bd-1da6a0843036
+		summarizeBy: none
+		sourceColumn: order_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column item_created_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 3dfb59bb-e206-4075-8081-8b274750f498
+		summarizeBy: none
+		sourceColumn: item_created_at
+
+		variation Variation
+			isDefault
+			relationship: 3d68ddf2-e2df-4f15-8fd2-e0315d91cfc3
+			defaultHierarchy: LocalDateTable_26622b10-5d6a-4989-9bd4-4876b42e07da.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column item_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: f7ecf770-4288-47b2-a2e2-20b29d3adffd
+		summarizeBy: none
+		sourceColumn: item_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column item_month
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: a05e8620-0c6b-4215-acb3-0ae2403d6920
+		summarizeBy: none
+		sourceColumn: item_month
+
+		variation Variation
+			isDefault
+			relationship: de0dc6e8-00de-4c6b-ad4c-87d5df5f3a4f
+			defaultHierarchy: LocalDateTable_491c80e3-4ebb-4e89-81d7-52769af585d7.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column sale_price
+		dataType: double
+		lineageTag: 7a993db8-9804-41af-8dc3-7cb79777a190
+		summarizeBy: sum
+		sourceColumn: sale_price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column product_cost
+		dataType: double
+		lineageTag: 3a2f2316-7216-4457-af04-abc3a1580cc9
+		summarizeBy: sum
+		sourceColumn: product_cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column item_margin_value
+		dataType: double
+		lineageTag: bfc8395b-cca8-4b43-bb66-67dbb8a8b4fb
+		summarizeBy: sum
+		sourceColumn: item_margin_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column product_name
+		dataType: string
+		lineageTag: e08c6b0d-8874-4419-b74e-e2b712e99992
+		summarizeBy: none
+		sourceColumn: product_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_category
+		dataType: string
+		lineageTag: 555b2048-f663-44e9-9650-9ea362296dca
+		summarizeBy: none
+		sourceColumn: product_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_brand
+		dataType: string
+		lineageTag: 2f7ffa77-0be3-4199-9209-ea06a6a6fc0f
+		summarizeBy: none
+		sourceColumn: product_brand
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_department
+		dataType: string
+		lineageTag: b3b4ecc5-a4fa-443b-9cdd-3f491ebcd7af
+		summarizeBy: none
+		sourceColumn: product_department
+
+		annotation SummarizationSetBy = Automatic
+
+	column retail_price
+		dataType: double
+		lineageTag: f54a007c-b871-4401-87a2-af99fc0752f9
+		summarizeBy: sum
+		sourceColumn: retail_price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column sku
+		dataType: string
+		lineageTag: 4abc073c-aeff-4c21-9370-8baa42230223
+		summarizeBy: none
+		sourceColumn: sku
+
+		annotation SummarizationSetBy = Automatic
+
+	column distribution_center_id
+		dataType: int64
+		formatString: 0
+		lineageTag: efc8b3fa-4cb2-46e6-996c-e8055536cb17
+		summarizeBy: sum
+		sourceColumn: distribution_center_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column traffic_source
+		dataType: string
+		lineageTag: 78d09d6b-deaf-4656-892a-b2e8f18633d4
+		summarizeBy: none
+		sourceColumn: traffic_source
+
+		annotation SummarizationSetBy = Automatic
+
+	column age
+		dataType: int64
+		formatString: 0
+		lineageTag: 4c80f9e4-9d7e-4a1c-af58-59c397cd0a72
+		summarizeBy: sum
+		sourceColumn: age
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_gender
+		dataType: string
+		lineageTag: a63d4e22-eeea-4d2f-8545-13d86c36ac78
+		summarizeBy: none
+		sourceColumn: customer_gender
+
+		annotation SummarizationSetBy = Automatic
+
+	column country
+		dataType: string
+		lineageTag: 1a26b09f-a784-407a-9b2a-428ec4537835
+		summarizeBy: none
+		sourceColumn: country
+
+		annotation SummarizationSetBy = Automatic
+
+	column state
+		dataType: string
+		lineageTag: cc9c12f0-56d2-4ec4-bd23-f06c0568c3b5
+		summarizeBy: none
+		sourceColumn: state
+
+		annotation SummarizationSetBy = Automatic
+
+	partition vw_product_performance = m
+		mode: import
+		source =
+				let
+				    Source = GoogleBigQuery.Database([Implementation="2.0"]),
+				    #"causal-smoke-458206-c3_Database" = Source{[Name="causal-smoke-458206-c3",Kind="Database"]}[Data],
+				    the_look_ecommerce_Schema = #"causal-smoke-458206-c3_Database"{[Name="the_look_ecommerce",Kind="Schema"]}[Data],
+				    vw_product_performance_View = the_look_ecommerce_Schema{[Name="vw_product_performance",Kind="View"]}[Data]
+				in
+				    vw_product_performance_View
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,124 @@
+table products
+	isHidden
+	lineageTag: be842567-0279-4ac8-a2ff-d9c202991b5d
+
+	column id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f82564ef-299b-4e9a-bc95-de3b46ed307a
+		summarizeBy: none
+		sourceColumn: id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column cost
+		dataType: double
+		isHidden
+		lineageTag: a03cd683-497c-4289-8209-557117539699
+		summarizeBy: none
+		sourceColumn: cost
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column category
+		dataType: string
+		isHidden
+		lineageTag: 73774719-22e7-4374-b6bc-2cb8848df502
+		summarizeBy: none
+		sourceColumn: category
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column name
+		dataType: string
+		isHidden
+		lineageTag: 89420bcd-da96-494f-908d-57c2a08c6ca2
+		summarizeBy: none
+		sourceColumn: name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column brand
+		dataType: string
+		isHidden
+		lineageTag: 34577cf0-f570-4dca-97a2-d05f2bcd7350
+		summarizeBy: none
+		sourceColumn: brand
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column retail_price
+		dataType: double
+		isHidden
+		lineageTag: 63e409ab-c9c9-4dfe-8c21-b4770bf80d2b
+		summarizeBy: none
+		sourceColumn: retail_price
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column department
+		dataType: string
+		isHidden
+		lineageTag: 02331039-8019-4574-9998-101f9d7a311f
+		summarizeBy: none
+		sourceColumn: department
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column sku
+		dataType: string
+		isHidden
+		lineageTag: 425ecfa7-dc51-4bde-829a-7afd9173622f
+		summarizeBy: none
+		sourceColumn: sku
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column distribution_center_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 750570bc-8c9e-4139-b89a-6fc73bbd79ea
+		summarizeBy: none
+		sourceColumn: distribution_center_id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition products = m
+		mode: import
+		source =
+				let
+				    Source = GoogleBigQuery.Database([Implementation="2.0"]),
+				    #"bigquery-public-data_Database" = Source{[Name="bigquery-public-data",Kind="Database"]}[Data],
+				    thelook_ecommerce_Schema = #"bigquery-public-data_Database"{[Name="thelook_ecommerce",Kind="Schema"]}[Data],
+				    products_Table = thelook_ecommerce_Schema{[Name="products",Kind="Table"]}[Data]
+				in
+				    products_Table
+
+	changedProperty = IsHidden
+
+	annotation PBI_ResultType = Table
+

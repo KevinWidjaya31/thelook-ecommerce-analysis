@@ -1,0 +1,61 @@
+table retention_by_traffic_source
+	lineageTag: 8d3ab712-31a4-4822-a3d5-a274baf80438
+
+	column traffic_source
+		dataType: string
+		lineageTag: 3a599108-c461-4faa-a09a-059e89db1eb4
+		summarizeBy: none
+		sourceColumn: traffic_source
+
+		annotation SummarizationSetBy = Automatic
+
+	column customers_with_completed_orders
+		dataType: int64
+		formatString: 0
+		lineageTag: 9e9156de-a257-4c72-918f-6a1e773d20bc
+		summarizeBy: sum
+		sourceColumn: customers_with_completed_orders
+
+		annotation SummarizationSetBy = Automatic
+
+	column repeat_customers
+		dataType: int64
+		formatString: 0
+		lineageTag: abe6ecda-f6e6-4bdb-add8-33be13a2b4db
+		summarizeBy: sum
+		sourceColumn: repeat_customers
+
+		annotation SummarizationSetBy = Automatic
+
+	column repeat_purchase_rate
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: a9ca2158-ca2d-4f0f-a2a1-159298239d73
+		summarizeBy: sum
+		sourceColumn: repeat_purchase_rate
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_completed_orders_per_customer
+		dataType: double
+		lineageTag: feefa63f-77cd-4d4f-926e-114892230449
+		summarizeBy: sum
+		sourceColumn: avg_completed_orders_per_customer
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition retention_by_traffic_source = m
+		mode: import
+		source =
+				let
+				    Source = GoogleBigQuery.Database([Implementation="2.0"]),
+				    #"causal-smoke-458206-c3_Database" = Source{[Name="causal-smoke-458206-c3",Kind="Database"]}[Data],
+				    the_look_ecommerce_Schema = #"causal-smoke-458206-c3_Database"{[Name="the_look_ecommerce",Kind="Schema"]}[Data],
+				    retention_by_traffic_source_View = the_look_ecommerce_Schema{[Name="retention_by_traffic_source",Kind="View"]}[Data]
+				in
+				    retention_by_traffic_source_View
+
+	annotation PBI_ResultType = Table
+

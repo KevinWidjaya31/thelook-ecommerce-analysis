@@ -1,0 +1,167 @@
+relationship 66d21b8e-46e5-409c-936f-6ecf7c069bf7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: users.created_at
+	toColumn: LocalDateTable_85e31a91-bca5-49f3-9a3d-dcf519a949eb.Date
+
+relationship a4937d75-0114-43ef-9aaf-ac9b6183337f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: cleaned_items.order_date
+	toColumn: LocalDateTable_cabbd58a-2e6c-4824-844d-b675fe454921.Date
+
+relationship 9bae2093-c06d-4ff8-949d-1cec55f866ef
+	joinOnDateBehavior: datePartOnly
+	fromColumn: cohort_retention.cohort_month
+	toColumn: LocalDateTable_0697b699-777f-40c7-96d0-faa6a5079fe9.Date
+
+relationship 798440d2-47ef-4488-99ae-3ef8cf887c52
+	joinOnDateBehavior: datePartOnly
+	fromColumn: repeat_purchase_kpi.first_order_date
+	toColumn: LocalDateTable_d7b46ece-8e9c-4b74-89c4-8866ed09fda6.Date
+
+relationship 074d2cb4-83c8-4afe-8cc4-ce7f0ebf21f4
+	joinOnDateBehavior: datePartOnly
+	fromColumn: repeat_purchase_kpi.most_recent_order_date
+	toColumn: LocalDateTable_57420026-06bd-4ac7-b49b-a181a06fde62.Date
+
+relationship AutoDetected_31474c9a-d16f-4842-8c56-8d826bfd0e59
+	fromColumn: users.traffic_source
+	toColumn: retention_by_traffic_source.traffic_source
+
+relationship 1034cc3a-19c0-4695-9615-61c81537d893
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_executive_overview.order_created_at
+	toColumn: LocalDateTable_d386dd32-e84a-44d6-b0e1-388a922d3cbd.Date
+
+relationship 67c32e10-78e7-44a1-b072-177a8d436b2e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_executive_overview.order_month
+	toColumn: LocalDateTable_2b34b7bb-71a2-4f9d-88d4-7530b74bd40f.Date
+
+relationship 3cf0b88e-e10b-4275-a00f-001b26d8efde
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_executive_overview.shipped_at
+	toColumn: LocalDateTable_a237dc09-0279-4f56-b5f1-e615b5c7cce0.Date
+
+relationship 55c76bcc-1703-4d30-bcf3-bd663e7b6ba2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_executive_overview.delivered_at
+	toColumn: LocalDateTable_3560eeae-681e-439b-8166-3d687f3bb6f5.Date
+
+relationship 74b47e5e-370b-4801-954a-030f732091ad
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_executive_overview.returned_at
+	toColumn: LocalDateTable_79e21b28-9619-40b7-a6b7-1d55f67bab53.Date
+
+relationship AutoDetected_9e20e204-e565-4386-a179-a1b8fdae0586
+	fromColumn: vw_executive_overview.traffic_source
+	toColumn: retention_by_traffic_source.traffic_source
+
+relationship AutoDetected_8b02e002-53d8-4912-88e6-c27b5c4015c2
+	fromColumn: cleaned_items.order_id
+	toColumn: vw_executive_overview.order_id
+
+relationship 'vw_executive_overview_order_date_Dim Calendar_Date'
+	fromColumn: vw_executive_overview.order_date
+	toColumn: 'Dim Calendar'.Date
+
+relationship 3d68ddf2-e2df-4f15-8fd2-e0315d91cfc3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_product_performance.item_created_at
+	toColumn: LocalDateTable_26622b10-5d6a-4989-9bd4-4876b42e07da.Date
+
+relationship de0dc6e8-00de-4c6b-ad4c-87d5df5f3a4f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_product_performance.item_month
+	toColumn: LocalDateTable_491c80e3-4ebb-4e89-81d7-52769af585d7.Date
+
+relationship AutoDetected_8123436f-ce2a-4c45-8d8e-7a1e3b93a704
+	fromColumn: vw_product_performance.traffic_source
+	toColumn: retention_by_traffic_source.traffic_source
+
+relationship AutoDetected_dea163c3-29d2-497a-a8bd-6fab2fa00fe7
+	fromColumn: vw_product_performance.sku
+	toColumn: products.sku
+
+relationship AutoDetected_0543887e-f14e-43be-9638-738632eee26e
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: cleaned_items.order_item_id
+	toColumn: vw_product_performance.order_item_id
+
+relationship AutoDetected_97c3af3e-8100-4749-bf84-f1dfcaf6b8e7
+	isActive: false
+	fromColumn: vw_product_performance.order_id
+	toColumn: vw_executive_overview.order_id
+
+relationship 99777a12-c4d9-4c49-82ea-886b2f5999cd
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_customer_retention.order_created_at
+	toColumn: LocalDateTable_04a0ef09-1318-49a7-879b-dae22e7fa098.Date
+
+relationship 35a16eeb-27ee-4c48-a1da-aad8a6b8e1bf
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_customer_retention.order_month
+	toColumn: LocalDateTable_ecc2041f-2997-404e-85b5-2a9659eaffac.Date
+
+relationship d04fe67c-6276-4ce3-b4d9-107deb3bda65
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_customer_retention.cohort_month
+	toColumn: LocalDateTable_3e386f9b-b5c0-4338-9a94-d94eba53a08b.Date
+
+relationship AutoDetected_0a773e98-ab5c-4531-bcef-59e7e3ff5192
+	fromColumn: vw_customer_retention.traffic_source
+	toColumn: retention_by_traffic_source.traffic_source
+
+relationship AutoDetected_4e891085-a025-453e-9a8a-dab2112230df
+	isActive: false
+	fromColumn: cleaned_items.order_id
+	toColumn: vw_customer_retention.order_id
+
+relationship AutoDetected_29551e46-df2a-4c2b-9bbd-20e095a7946b
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: vw_executive_overview.order_id
+	toColumn: vw_customer_retention.order_id
+
+relationship AutoDetected_929884d7-dea7-4fad-b781-a6c8b48177f1
+	isActive: false
+	fromColumn: vw_product_performance.order_id
+	toColumn: vw_customer_retention.order_id
+
+relationship 'vw_product_performance_item_date_Dim Calendar_Date'
+	fromColumn: vw_product_performance.item_date
+	toColumn: 'Dim Calendar'.Date
+
+relationship 'vw_customer_retention_order_date_Dim Calendar_Date'
+	fromColumn: vw_customer_retention.order_date
+	toColumn: 'Dim Calendar'.Date
+
+relationship 62c88e2f-b678-4ccd-976d-22f383d31dda
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_inventory_distribution.inventory_created_at
+	toColumn: LocalDateTable_1ec9fe89-55dd-4f7c-8f54-3eed392fcfe4.Date
+
+relationship 6f5f3ff6-6fe0-4349-b1e6-21c019d3d045
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_inventory_distribution.inventory_date
+	toColumn: LocalDateTable_c042e310-5372-43b3-902d-a3e652b67adb.Date
+
+relationship 07834462-900a-4cd1-92eb-dced64e0980f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_inventory_distribution.sold_at
+	toColumn: LocalDateTable_d089b434-6664-423b-80d7-3ea4275027f1.Date
+
+relationship 1bc608d1-2d6f-484e-b64f-06c4cc1e2e69
+	joinOnDateBehavior: datePartOnly
+	fromColumn: vw_inventory_distribution.sold_date
+	toColumn: LocalDateTable_d2bc8912-a0a8-47c0-bef8-a28bcdf42b4f.Date
+
+relationship AutoDetected_3a9d38f8-b8a3-4b3f-8ec0-a03136b275aa
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: vw_product_performance.inventory_item_id
+	toColumn: vw_inventory_distribution.inventory_item_id
+

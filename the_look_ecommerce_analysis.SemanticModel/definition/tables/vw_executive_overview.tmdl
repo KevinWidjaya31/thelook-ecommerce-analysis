@@ -1,0 +1,230 @@
+table vw_executive_overview
+	lineageTag: ba16faf2-90f4-4839-90dd-34e7260fb296
+
+	column order_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 68f5a5e7-db42-419a-8e05-14123b3b0840
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column user_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 0b934b10-1d88-4ddc-a6b4-aad12c5cb42c
+		summarizeBy: sum
+		sourceColumn: user_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_status
+		dataType: string
+		lineageTag: 0c36e8a4-f9a9-4d8c-b713-71e6249ef1b2
+		summarizeBy: none
+		sourceColumn: order_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_gender
+		dataType: string
+		lineageTag: cbcd3428-0c56-4be9-9a38-f359df0a7779
+		summarizeBy: none
+		sourceColumn: order_gender
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_created_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 0912f2ce-1398-480a-9b78-79672461e5c3
+		summarizeBy: none
+		sourceColumn: order_created_at
+
+		variation Variation
+			isDefault
+			relationship: 1034cc3a-19c0-4695-9615-61c81537d893
+			defaultHierarchy: LocalDateTable_d386dd32-e84a-44d6-b0e1-388a922d3cbd.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 1e46c5b2-b07c-4630-8233-7cc26492f298
+		summarizeBy: none
+		sourceColumn: order_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column order_month
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 6a42c61a-7df5-4bf8-8f56-cc23fa575519
+		summarizeBy: none
+		sourceColumn: order_month
+
+		variation Variation
+			isDefault
+			relationship: 67c32e10-78e7-44a1-b072-177a8d436b2e
+			defaultHierarchy: LocalDateTable_2b34b7bb-71a2-4f9d-88d4-7530b74bd40f.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column shipped_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 1ca90fa3-c2a3-437b-ba80-0d7cdb6f0cf5
+		summarizeBy: none
+		sourceColumn: shipped_at
+
+		variation Variation
+			isDefault
+			relationship: 3cf0b88e-e10b-4275-a00f-001b26d8efde
+			defaultHierarchy: LocalDateTable_a237dc09-0279-4f56-b5f1-e615b5c7cce0.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column delivered_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: fe8a08bb-a9ad-420d-a039-ff5012676ed7
+		summarizeBy: none
+		sourceColumn: delivered_at
+
+		variation Variation
+			isDefault
+			relationship: 55c76bcc-1703-4d30-bcf3-bd663e7b6ba2
+			defaultHierarchy: LocalDateTable_3560eeae-681e-439b-8166-3d687f3bb6f5.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column returned_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 057d1983-55cc-4b81-baee-e7167b778680
+		summarizeBy: none
+		sourceColumn: returned_at
+
+		variation Variation
+			isDefault
+			relationship: 74b47e5e-370b-4801-954a-030f732091ad
+			defaultHierarchy: LocalDateTable_79e21b28-9619-40b7-a6b7-1d55f67bab53.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column reported_item_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 720dab0b-7854-4da9-86c5-841a382a8c3c
+		summarizeBy: sum
+		sourceColumn: reported_item_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column age
+		dataType: int64
+		formatString: 0
+		lineageTag: 8a805e54-5361-4c1f-8e16-65a715fcdbac
+		summarizeBy: sum
+		sourceColumn: age
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_gender
+		dataType: string
+		lineageTag: 190aab29-d300-4066-9131-4b840379f7a9
+		summarizeBy: none
+		sourceColumn: customer_gender
+
+		annotation SummarizationSetBy = Automatic
+
+	column traffic_source
+		dataType: string
+		lineageTag: e0751431-704e-49e5-ab6e-aab95657ddb3
+		summarizeBy: none
+		sourceColumn: traffic_source
+
+		annotation SummarizationSetBy = Automatic
+
+	column country
+		dataType: string
+		lineageTag: af13ab2a-288a-48fd-a841-2b819f932387
+		summarizeBy: none
+		sourceColumn: country
+
+		annotation SummarizationSetBy = Automatic
+
+	column state
+		dataType: string
+		lineageTag: 226510a6-57a7-48df-8cb3-72296ea5a727
+		summarizeBy: none
+		sourceColumn: state
+
+		annotation SummarizationSetBy = Automatic
+
+	column city
+		dataType: string
+		lineageTag: 78312ab7-8b7b-4712-8ccb-f6a3bcd37488
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column item_count
+		dataType: int64
+		formatString: 0
+		lineageTag: e5a17229-9bc3-4e7b-94c3-f78fba0ef031
+		summarizeBy: sum
+		sourceColumn: item_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column item_sales_value
+		dataType: double
+		lineageTag: f9e50681-e325-4c4a-86c3-46e8383e52a1
+		summarizeBy: sum
+		sourceColumn: item_sales_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column item_cost_value
+		dataType: double
+		lineageTag: b2b1461f-7812-4d2e-bbe3-a8c76d72a0c6
+		summarizeBy: sum
+		sourceColumn: item_cost_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column item_margin_value
+		dataType: double
+		lineageTag: 27ed4f00-1d2e-424f-abd8-0dab0130f0b7
+		summarizeBy: sum
+		sourceColumn: item_margin_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition vw_executive_overview = m
+		mode: import
+		source =
+				let
+				    Source = GoogleBigQuery.Database([Implementation="2.0"]),
+				    #"causal-smoke-458206-c3_Database" = Source{[Name="causal-smoke-458206-c3",Kind="Database"]}[Data],
+				    the_look_ecommerce_Schema = #"causal-smoke-458206-c3_Database"{[Name="the_look_ecommerce",Kind="Schema"]}[Data],
+				    vw_executive_overview_View = the_look_ecommerce_Schema{[Name="vw_executive_overview",Kind="View"]}[Data]
+				in
+				    vw_executive_overview_View
+
+	annotation PBI_ResultType = Table
+

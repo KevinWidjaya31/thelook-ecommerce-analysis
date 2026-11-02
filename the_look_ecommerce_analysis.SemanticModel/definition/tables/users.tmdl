@@ -1,0 +1,207 @@
+table users
+	isHidden
+	lineageTag: 9200df29-5a35-4c62-8ac5-5cb02529d7d3
+
+	column id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 54cf8016-47c7-4edb-9741-37c26356e660
+		summarizeBy: sum
+		sourceColumn: id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column first_name
+		dataType: string
+		isHidden
+		lineageTag: 11b4cb3e-d19a-47ea-9ae0-28872a50d540
+		summarizeBy: none
+		sourceColumn: first_name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column last_name
+		dataType: string
+		isHidden
+		lineageTag: 45a50e59-c1e0-4c03-96ef-1b281fd96795
+		summarizeBy: none
+		sourceColumn: last_name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column email
+		dataType: string
+		isHidden
+		lineageTag: 82f662d0-0303-43f7-823a-bb6bc5983782
+		summarizeBy: none
+		sourceColumn: email
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column age
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 3b540521-15a1-4ce3-b2b1-82ac8e392971
+		summarizeBy: sum
+		sourceColumn: age
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column gender
+		dataType: string
+		isHidden
+		lineageTag: cd227d01-cca7-4e96-b044-515d28d39785
+		summarizeBy: none
+		sourceColumn: gender
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column state
+		dataType: string
+		isHidden
+		lineageTag: fbcf8b6f-c6b0-41ed-b8ff-661308addd8b
+		summarizeBy: none
+		sourceColumn: state
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column street_address
+		dataType: string
+		isHidden
+		lineageTag: 256ef24d-5ab1-436a-b433-a00b3065dcc5
+		summarizeBy: none
+		sourceColumn: street_address
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column postal_code
+		dataType: string
+		isHidden
+		lineageTag: 9c9471c8-465b-4333-b734-54a07f9f87e2
+		summarizeBy: none
+		sourceColumn: postal_code
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column city
+		dataType: string
+		isHidden
+		lineageTag: 248fa6d9-234b-4404-9b87-20732067614c
+		summarizeBy: none
+		sourceColumn: city
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column country
+		dataType: string
+		isHidden
+		lineageTag: 576ebea7-260d-4de9-b0b3-7adc303d8fe1
+		summarizeBy: none
+		sourceColumn: country
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column latitude
+		dataType: double
+		isHidden
+		lineageTag: 100769de-9464-47f5-a587-c5b01cba3e66
+		summarizeBy: sum
+		sourceColumn: latitude
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column longitude
+		dataType: double
+		isHidden
+		lineageTag: 4ecfc49b-fb25-4e06-9f7e-f373433db06d
+		summarizeBy: sum
+		sourceColumn: longitude
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column traffic_source
+		dataType: string
+		isHidden
+		lineageTag: 4b3f0ee9-e267-42f4-8eca-fbb7027361de
+		summarizeBy: none
+		sourceColumn: traffic_source
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column created_at
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		lineageTag: 45cd06da-c6b0-41a4-87e0-b283102ecc33
+		summarizeBy: none
+		sourceColumn: created_at
+
+		variation Variation
+			isDefault
+			relationship: 66d21b8e-46e5-409c-936f-6ecf7c069bf7
+			defaultHierarchy: LocalDateTable_85e31a91-bca5-49f3-9a3d-dcf519a949eb.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column user_geom
+		dataType: string
+		isHidden
+		lineageTag: fd90f502-28c2-4038-85d5-f8ebffe97f8b
+		summarizeBy: none
+		sourceColumn: user_geom
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition users = m
+		mode: import
+		source =
+				let
+				    Source = GoogleBigQuery.Database([Implementation="2.0"]),
+				    #"bigquery-public-data_Database" = Source{[Name="bigquery-public-data",Kind="Database"]}[Data],
+				    thelook_ecommerce_Schema = #"bigquery-public-data_Database"{[Name="thelook_ecommerce",Kind="Schema"]}[Data],
+				    users_Table = thelook_ecommerce_Schema{[Name="users",Kind="Table"]}[Data]
+				in
+				    users_Table
+
+	changedProperty = IsHidden
+
+	annotation PBI_ResultType = Table
+

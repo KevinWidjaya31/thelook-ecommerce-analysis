@@ -1,0 +1,52 @@
+/// Tabel kalender kontigu untuk time intelligence (1 Jan tahun order pertama s/d tanggal order terakhir).
+table 'Dim Calendar'
+	lineageTag: 2279b087-5180-42f7-8c61-afc57fb6acd7
+	dataCategory: Time
+
+	column Date
+		isUnique
+		lineageTag: 48785c8b-5619-41c5-b2b9-0483f0d76dfa
+		isNameInferred
+		sourceColumn: [Date]
+
+	column Year
+		lineageTag: 2adc037e-fec8-4891-bd22-e93308ab3e14
+		isNameInferred
+		sourceColumn: [Year]
+
+	column Quarter
+		lineageTag: 64286622-a863-404a-b86e-ca899dc7a316
+		isNameInferred
+		sourceColumn: [Quarter]
+
+	column 'Month Number'
+		lineageTag: c9dda218-f24b-48d1-9568-c8e6fe6723d1
+		isNameInferred
+		sourceColumn: [Month Number]
+
+	column Month
+		lineageTag: 4ab83fd4-8121-428d-8837-c478339a2fd9
+		isNameInferred
+		sourceColumn: [Month]
+		sortByColumn: 'Month Number'
+
+	column Year-Month
+		lineageTag: 3ed27fc3-5a2c-43fa-b43b-4cf0984aa03f
+		isNameInferred
+		sourceColumn: [Year-Month]
+
+	partition 'Dim Calendar' = calculated
+		mode: import
+		source =
+				VAR _min = DATE(YEAR(MIN(vw_executive_overview[order_date])), 1, 1)
+				VAR _max = MAX(vw_executive_overview[order_date])
+				RETURN
+				ADDCOLUMNS(
+				    CALENDAR(_min, _max),
+				    "Year", YEAR([Date]),
+				    "Quarter", "Q" & QUARTER([Date]),
+				    "Month Number", MONTH([Date]),
+				    "Month", FORMAT([Date], "mmm"),
+				    "Year-Month", FORMAT([Date], "yyyy-mm")
+				)
+

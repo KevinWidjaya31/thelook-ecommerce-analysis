@@ -1,0 +1,157 @@
+table cleaned_items
+	isHidden
+	lineageTag: 6446b853-9d5c-4277-81d1-9c971d7fcc81
+
+	column order_item_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 9480c4de-39f4-4cf3-9b83-f8d98f094928
+		summarizeBy: sum
+		sourceColumn: order_item_id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c005a9ab-a6e6-45d4-9059-b6088c2ba792
+		summarizeBy: none
+		sourceColumn: order_id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 238ae143-be8f-4c88-ad39-3e3d74032d71
+		summarizeBy: sum
+		sourceColumn: product_id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_date
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: 61e19014-cf29-454a-b4cd-162e47365c73
+		summarizeBy: none
+		sourceColumn: order_date
+
+		variation Variation
+			isDefault
+			relationship: a4937d75-0114-43ef-9aaf-ac9b6183337f
+			defaultHierarchy: LocalDateTable_cabbd58a-2e6c-4824-844d-b675fe454921.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column item_status
+		dataType: string
+		isHidden
+		lineageTag: 5f5b3f6c-1a4b-4ce5-a885-f56f2801d0dd
+		summarizeBy: none
+		sourceColumn: item_status
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_name
+		dataType: string
+		isHidden
+		lineageTag: a21026cf-4d74-4618-94f5-45ffade26cd9
+		summarizeBy: none
+		sourceColumn: product_name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_category
+		dataType: string
+		isHidden
+		lineageTag: 1a0d4ab8-a85f-4797-8797-7ec5e0552b2b
+		summarizeBy: none
+		sourceColumn: product_category
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column department
+		dataType: string
+		isHidden
+		lineageTag: bbec45f8-1bfe-4d2e-89d2-fae0cf406fbe
+		summarizeBy: none
+		sourceColumn: department
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column revenue
+		dataType: double
+		isHidden
+		lineageTag: 75012c30-a8f9-45af-80e1-f6fda80f9f57
+		summarizeBy: sum
+		sourceColumn: revenue
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column product_cost
+		dataType: double
+		isHidden
+		lineageTag: 4bc42067-dd35-484d-9835-60bdf52d967a
+		summarizeBy: sum
+		sourceColumn: product_cost
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column estimated_profit
+		dataType: double
+		isHidden
+		lineageTag: 9f8f0b0d-eda4-4dfe-93a5-adfd7596d6d7
+		summarizeBy: sum
+		sourceColumn: estimated_profit
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition cleaned_items = m
+		mode: import
+		source =
+				let
+				    Source = GoogleBigQuery.Database([Implementation="2.0"]),
+				    #"causal-smoke-458206-c3_Database" = Source{[Name="causal-smoke-458206-c3",Kind="Database"]}[Data],
+				    the_look_ecommerce_Schema = #"causal-smoke-458206-c3_Database"{[Name="the_look_ecommerce",Kind="Schema"]}[Data],
+				    cleaned_items_View = the_look_ecommerce_Schema{[Name="cleaned_items",Kind="View"]}[Data]
+				in
+				    cleaned_items_View
+
+	changedProperty = IsHidden
+
+	annotation PBI_ResultType = Table
+

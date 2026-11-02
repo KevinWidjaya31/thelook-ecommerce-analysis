@@ -1,0 +1,481 @@
+table 'DAX Measure'
+	lineageTag: 7204cb4e-4928-40e0-96d1-5ec475f60790
+
+	measure 'Repeat Customers' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT('repeat_purchase_kpi'[user_id]),
+			    'repeat_purchase_kpi'[is_repeat_customer] = TRUE()
+			)
+		formatString: 0
+		lineageTag: 5b982496-d096-42ec-b1e1-44dbb034b8e9
+
+	measure 'Total Customers' = ```
+			
+			DISTINCTCOUNT('repeat_purchase_kpi'[user_id])
+			
+			```
+		formatString: 0
+		lineageTag: 5c7d4747-dff2-4a76-a75f-24311dc2e477
+
+	measure 'Repeat Purchase Rate' =
+			
+			DIVIDE([Repeat Customers], [Total Customers], 0)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 97a3752d-66c3-4f8a-88c7-0f563012df14
+
+	measure 'Average Completed Orders per Customer' =
+			
+			AVERAGE('repeat_purchase_kpi'[completed_orders])
+		lineageTag: 1d7e8e09-f2ab-4042-9c06-294ce00f8d56
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Gross sales value dari semua status order (Shipped, Complete, Processing, Cancelled, Returned).
+	measure 'Total Revenue' = SUM('vw_executive_overview'[item_sales_value])
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Executive Overview
+		lineageTag: b332cd16-f590-48aa-be5a-943c38ac4a23
+
+	/// Total item_margin_value (= sales - cost) dari semua status order.
+	measure 'Gross Margin' = SUM('vw_executive_overview'[item_margin_value])
+		formatString: $#,0
+		displayFolder: Executive Overview
+		lineageTag: e9bdf3a3-dca0-4d73-849d-6c86be58e61e
+
+	/// Gross Margin / Total Revenue.
+	measure 'Margin %' = DIVIDE([Gross Margin], [Total Revenue], 0)
+		formatString: 0.0%
+		displayFolder: Executive Overview
+		lineageTag: 91030abe-0b3d-4e74-bbbe-691aef500fa6
+
+	/// Jumlah order unik dari semua status.
+	measure Orders = DISTINCTCOUNT('vw_executive_overview'[order_id])
+		formatString: #,0
+		displayFolder: Executive Overview
+		lineageTag: 388e3bda-a7a4-43ee-a2dd-92237a6157db
+
+	/// Average Order Value = Total Revenue / Orders.
+	measure AOV = DIVIDE([Total Revenue], [Orders], 0)
+		formatString: $#,0.00
+		displayFolder: Executive Overview
+		lineageTag: a055c996-1140-4424-827f-84f0d71e1a0f
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	/// Order berstatus Returned / semua order dalam filter aktif.
+	measure 'Return Rate' =
+			DIVIDE(
+			    COALESCE(
+			        CALCULATE(
+			            DISTINCTCOUNT('vw_executive_overview'[order_id]),
+			            KEEPFILTERS('vw_executive_overview'[order_status] = "Returned")
+			        ),
+			        0
+			    ),
+			    [Orders],
+			    0
+			)
+		formatString: 0.0%
+		displayFolder: Executive Overview
+		lineageTag: c2fd5969-f953-4eec-8a61-0c0a6ae579b5
+
+	/// Order berstatus Cancelled / semua order dalam filter aktif.
+	measure 'Cancel Rate' =
+			DIVIDE(
+			    COALESCE(
+			        CALCULATE(
+			            DISTINCTCOUNT('vw_executive_overview'[order_id]),
+			            KEEPFILTERS('vw_executive_overview'[order_status] = "Cancelled")
+			        ),
+			        0
+			    ),
+			    [Orders],
+			    0
+			)
+		formatString: 0.0%
+		displayFolder: Executive Overview
+		lineageTag: e250a9cf-902b-4322-8a2e-12e2cf711af8
+
+	/// Perubahan Total Revenue vs periode yang sama tahun lalu. Kosong jika rentang tanggal > 366 hari atau tidak ada data tahun lalu.
+	measure 'Revenue YoY %' =
+			VAR minD = MIN('Dim Calendar'[Date])
+			VAR maxD = MAX('Dim Calendar'[Date])
+			VAR days = DATEDIFF(minD, maxD, DAY) + 1
+			VAR pyDates =
+			    FILTER(
+			        ALL('Dim Calendar'),
+			        'Dim Calendar'[Date] >= DATE(YEAR(minD) - 1, MONTH(minD), DAY(minD))
+			            && 'Dim Calendar'[Date] <= DATE(YEAR(maxD) - 1, MONTH(maxD), DAY(maxD))
+			    )
+			VAR cur = [Total Revenue]
+			VAR py = CALCULATE([Total Revenue], pyDates)
+			RETURN IF(days <= 366, DIVIDE(cur - py, py))
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Time Intelligence
+		lineageTag: 6b6e1be8-1509-4a99-a2ef-c0f3dc9f788a
+
+	/// Perubahan Gross Margin vs periode yang sama tahun lalu.
+	measure 'Gross Margin YoY %' =
+			VAR minD = MIN('Dim Calendar'[Date])
+			VAR maxD = MAX('Dim Calendar'[Date])
+			VAR days = DATEDIFF(minD, maxD, DAY) + 1
+			VAR pyDates =
+			    FILTER(
+			        ALL('Dim Calendar'),
+			        'Dim Calendar'[Date] >= DATE(YEAR(minD) - 1, MONTH(minD), DAY(minD))
+			            && 'Dim Calendar'[Date] <= DATE(YEAR(maxD) - 1, MONTH(maxD), DAY(maxD))
+			    )
+			VAR cur = [Gross Margin]
+			VAR py = CALCULATE([Gross Margin], pyDates)
+			RETURN IF(days <= 366, DIVIDE(cur - py, py))
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Time Intelligence
+		lineageTag: 451e9be3-3e69-45fa-8537-3c977e3c5153
+
+	/// Perubahan jumlah Orders vs periode yang sama tahun lalu.
+	measure 'Orders YoY %' =
+			VAR minD = MIN('Dim Calendar'[Date])
+			VAR maxD = MAX('Dim Calendar'[Date])
+			VAR days = DATEDIFF(minD, maxD, DAY) + 1
+			VAR pyDates =
+			    FILTER(
+			        ALL('Dim Calendar'),
+			        'Dim Calendar'[Date] >= DATE(YEAR(minD) - 1, MONTH(minD), DAY(minD))
+			            && 'Dim Calendar'[Date] <= DATE(YEAR(maxD) - 1, MONTH(maxD), DAY(maxD))
+			    )
+			VAR cur = [Orders]
+			VAR py = CALCULATE([Orders], pyDates)
+			RETURN IF(days <= 366, DIVIDE(cur - py, py))
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Time Intelligence
+		lineageTag: b79585f0-0d1e-41a2-a294-219e6f7d4ba6
+
+	/// Perubahan AOV vs periode yang sama tahun lalu.
+	measure 'AOV YoY %' =
+			VAR minD = MIN('Dim Calendar'[Date])
+			VAR maxD = MAX('Dim Calendar'[Date])
+			VAR days = DATEDIFF(minD, maxD, DAY) + 1
+			VAR pyDates =
+			    FILTER(
+			        ALL('Dim Calendar'),
+			        'Dim Calendar'[Date] >= DATE(YEAR(minD) - 1, MONTH(minD), DAY(minD))
+			            && 'Dim Calendar'[Date] <= DATE(YEAR(maxD) - 1, MONTH(maxD), DAY(maxD))
+			    )
+			VAR cur = [AOV]
+			VAR py = CALCULATE([AOV], pyDates)
+			RETURN IF(days <= 366, DIVIDE(cur - py, py))
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Time Intelligence
+		lineageTag: 75dc9b07-f21a-4d90-a05a-6d7dc2a5a588
+
+	/// Selisih Return Rate vs periode yang sama tahun lalu, dalam poin persentase.
+	measure 'Return Rate YoY (pp)' =
+			VAR minD = MIN('Dim Calendar'[Date])
+			VAR maxD = MAX('Dim Calendar'[Date])
+			VAR days = DATEDIFF(minD, maxD, DAY) + 1
+			VAR pyDates =
+			    FILTER(
+			        ALL('Dim Calendar'),
+			        'Dim Calendar'[Date] >= DATE(YEAR(minD) - 1, MONTH(minD), DAY(minD))
+			            && 'Dim Calendar'[Date] <= DATE(YEAR(maxD) - 1, MONTH(maxD), DAY(maxD))
+			    )
+			VAR cur = [Return Rate]
+			VAR pyOrders = CALCULATE([Orders], pyDates)
+			VAR py = CALCULATE([Return Rate], pyDates)
+			RETURN IF(days <= 366 && pyOrders > 0, (cur - py) * 100)
+		formatString: +0.0" pp";-0.0" pp";0.0" pp"
+		displayFolder: Time Intelligence
+		lineageTag: 3b46e9ac-02c9-4959-9b97-f36ae62a37dc
+
+	/// Total sale_price semua status item (gross, termasuk Cancelled dan Returned).
+	measure 'Product Revenue' = SUM('vw_product_performance'[sale_price])
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: Product Analysis
+		lineageTag: 7006504a-b0d2-47ec-b710-35846a55460f
+
+	/// Total item_margin_value (sale_price - cost). Item tanpa data produk (cost kosong) tidak ikut.
+	measure 'Product Margin' = SUM('vw_product_performance'[item_margin_value])
+		formatString: $#,0
+		displayFolder: Product Analysis
+		lineageTag: 6ebea435-dab2-4437-8b4b-e1a99107e4a4
+
+	/// Product Margin / Product Revenue.
+	measure 'Product Margin %' = DIVIDE([Product Margin], [Product Revenue], 0)
+		formatString: 0.0%
+		displayFolder: Product Analysis
+		lineageTag: f595313e-4cbe-47f8-ae6a-8d951a2b361f
+
+	/// Jumlah item terjual (satu baris order_item = satu unit), semua status.
+	measure 'Units Sold' = DISTINCTCOUNT('vw_product_performance'[order_item_id])
+		formatString: #,0
+		displayFolder: Product Analysis
+		lineageTag: 18cf5ac9-ff89-4875-ae51-377db1c9ac16
+
+	/// Product Revenue / Units Sold.
+	measure 'Avg Selling Price' = DIVIDE([Product Revenue], [Units Sold], 0)
+		formatString: $#,0.00
+		displayFolder: Product Analysis
+		lineageTag: e23e0417-2a1e-4cc9-b97e-89f17ac9bc18
+
+	/// Revenue item berstatus Complete, Shipped, atau Processing (tanpa Cancelled dan Returned).
+	measure 'Net Revenue' =
+			CALCULATE(
+			    [Product Revenue],
+			    KEEPFILTERS('vw_product_performance'[item_status] IN {"Complete", "Shipped", "Processing"})
+			)
+		formatString: $#,0
+		displayFolder: Product Analysis
+		lineageTag: 3f52a3c4-aa3f-406f-94a1-9319ca508a98
+
+	/// Persen kumulatif Product Revenue per kategori (urut dari revenue terbesar) untuk Pareto. Tampilkan semua kategori di visual, tanpa filter Top N.
+	measure 'Revenue Cumulative %' =
+			VAR cur = [Product Revenue]
+			VAR cats = ALLSELECTED('vw_product_performance'[product_category])
+			VAR cumRev = SUMX(FILTER(cats, [Product Revenue] >= cur), [Product Revenue])
+			VAR tot = SUMX(cats, [Product Revenue])
+			RETURN IF(NOT ISBLANK(cur), DIVIDE(cumRev, tot))
+		formatString: 0.0%
+		displayFolder: Product Analysis
+		lineageTag: fcaec130-c828-4158-ba4e-afe9539a3919
+
+	/// Jumlah pelanggan unik (user_id) dengan order dalam filter aktif. Semua status order.
+	measure Customers = DISTINCTCOUNT('vw_customer_retention'[user_id])
+		formatString: #,0
+		displayFolder: Customer Analysis
+		lineageTag: c3a03645-dd65-4ed9-b5ad-d6166eb21cc2
+
+	/// Pelanggan yang total ordernya (seumur data) 2 atau lebih. Semua status order.
+	measure 'Repeat Customers (2+)' =
+			CALCULATE(
+			    DISTINCTCOUNT('vw_customer_retention'[user_id]),
+			    KEEPFILTERS('vw_customer_retention'[customer_order_count] >= 2)
+			)
+		formatString: #,0
+		displayFolder: Customer Analysis
+		lineageTag: 0209081c-d071-4ff1-81c1-ca1e1875bdc0
+
+	/// Repeat Customers (2+) / Customers.
+	measure 'Repeat Rate' = DIVIDE([Repeat Customers (2+)], [Customers], 0)
+		formatString: 0.0%
+		displayFolder: Customer Analysis
+		lineageTag: ba4772c6-d76e-42c3-a622-c23c23beedde
+
+	/// Jumlah order unik / Customers.
+	measure 'Orders per Customer' = DIVIDE(DISTINCTCOUNT('vw_customer_retention'[order_id]), [Customers], 0)
+		formatString: 0.00
+		displayFolder: Customer Analysis
+		lineageTag: c7aacf69-93be-4645-bccc-91c0b43bca1c
+
+	/// Persen pelanggan satu cohort yang order lagi di bulan ke-N (untuk matrix cohort). Sel bulan yang belum lengkap dikosongkan.
+	measure 'Cohort Retention %' =
+			VAR c = SELECTEDVALUE('vw_customer_retention'[cohort_month])
+			VAR i = SELECTEDVALUE('vw_customer_retention'[cohort_month_index])
+			VAR lastComplete =
+			    EDATE(CALCULATE(MAX('vw_customer_retention'[order_month]), ALL('vw_customer_retention')), -1)
+			VAR active = DISTINCTCOUNT('vw_customer_retention'[user_id])
+			VAR cohortSize =
+			    CALCULATE(DISTINCTCOUNT('vw_customer_retention'[user_id]), 'vw_customer_retention'[cohort_month_index] = 0)
+			RETURN
+			    IF(NOT ISBLANK(c) && NOT ISBLANK(i) && EDATE(c, i) > lastComplete, BLANK(), DIVIDE(active, cohortSize))
+		formatString: 0.0%
+		displayFolder: Customer Analysis
+		lineageTag: 104b412e-9781-476b-b33a-25467bea4db2
+
+	/// Retensi bulan ke-1: pelanggan yang order lagi sebulan setelah order pertama / ukuran cohort. Hanya cohort yang bulan ke-1-nya sudah lengkap.
+	measure 'Month-1 Retention' =
+			VAR lastComplete =
+			    EDATE(CALCULATE(MAX('vw_customer_retention'[order_month]), ALL('vw_customer_retention')), -1)
+			VAR cutoff = EDATE(lastComplete, -1)
+			VAR num =
+			    CALCULATE(
+			        DISTINCTCOUNT('vw_customer_retention'[user_id]),
+			        'vw_customer_retention'[cohort_month_index] = 1,
+			        'vw_customer_retention'[cohort_month] <= cutoff
+			    )
+			VAR den =
+			    CALCULATE(
+			        DISTINCTCOUNT('vw_customer_retention'[user_id]),
+			        'vw_customer_retention'[cohort_month_index] = 0,
+			        'vw_customer_retention'[cohort_month] <= cutoff
+			    )
+			RETURN DIVIDE(num, den)
+		formatString: 0.0%
+		displayFolder: Customer Analysis
+		lineageTag: b8704281-da3a-4b90-849a-937fafc8c690
+
+	/// Jumlah pelanggan laki-laki (gender M). Semua status order.
+	measure 'Male Customers' =
+			CALCULATE(
+			    DISTINCTCOUNT('vw_customer_retention'[user_id]),
+			    KEEPFILTERS('vw_customer_retention'[gender] = "M")
+			)
+		formatString: #,0
+		displayFolder: Customer Analysis
+		lineageTag: 311a8684-41ba-4bab-a650-2034db5a7bd1
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	/// Jumlah pelanggan perempuan (gender F). Semua status order.
+	measure 'Female Customers' =
+			CALCULATE(
+			    DISTINCTCOUNT('vw_customer_retention'[user_id]),
+			    KEEPFILTERS('vw_customer_retention'[gender] = "F")
+			)
+		formatString: #,0
+		displayFolder: Customer Analysis
+		lineageTag: a57f91d9-5803-43c2-9e5d-ac573aa061d1
+
+	/// Jumlah unit inventori unik (inventory_item_id). Semua status.
+	measure 'Total Inventory Items' = DISTINCTCOUNT('vw_inventory_distribution'[inventory_item_id])
+		formatString: #,0
+		displayFolder: Inventory Analysis
+		lineageTag: 87293013-0aa5-4d0a-bb5d-338d5fb9bc8e
+
+	/// Jumlah produk unik (product_id) yang punya unit inventori.
+	measure 'Total Products' = DISTINCTCOUNT('vw_inventory_distribution'[product_id])
+		formatString: #,0
+		displayFolder: Inventory Analysis
+		lineageTag: 35103463-8164-4aae-944a-6dc89ea520a1
+
+	/// Unit inventori berstatus Sold (sold_at sudah lewat saat query BigQuery dijalankan).
+	measure 'Sold Items' =
+			CALCULATE(
+			    [Total Inventory Items],
+			    KEEPFILTERS('vw_inventory_distribution'[inventory_status] = "Sold")
+			)
+		formatString: #,0
+		displayFolder: Inventory Analysis
+		lineageTag: 45714b16-1913-4e10-8293-ca23f9123f1c
+
+	/// Unit inventori berstatus Unsold (sold_at kosong). Bukan berarti stok tersedia secara operasional.
+	measure 'Unsold Items' =
+			CALCULATE(
+			    [Total Inventory Items],
+			    KEEPFILTERS('vw_inventory_distribution'[inventory_status] = "Unsold")
+			)
+		formatString: #,0
+		displayFolder: Inventory Analysis
+		lineageTag: 295691c7-0642-4fba-89de-a7c84d575c4d
+
+	/// Unit inventori dengan sold_at di masa depan relatif terhadap waktu query. Tidak dihitung sebagai Sold.
+	measure 'Pending Sale Items' =
+			CALCULATE(
+			    [Total Inventory Items],
+			    KEEPFILTERS('vw_inventory_distribution'[inventory_status] = "Pending Sale Timestamp")
+			)
+		formatString: #,0
+		displayFolder: Inventory Analysis
+		lineageTag: d84190ed-f0c2-42eb-936b-97c31c8d97cd
+
+	/// Jumlah distribution center unik pada data inventori.
+	measure 'Distribution Centers' = DISTINCTCOUNT('vw_inventory_distribution'[product_distribution_center_id])
+		formatString: #,0
+		displayFolder: Inventory Analysis
+		lineageTag: 66b683c2-cc55-4674-9db7-d919738d14f0
+
+	/// Sold Items / Total Inventory Items.
+	measure 'Sold Rate (%)' = DIVIDE([Sold Items], [Total Inventory Items], 0)
+		formatString: 0.0%
+		displayFolder: Inventory Analysis
+		lineageTag: db2f5cef-156b-417c-b208-5525da03b449
+
+	/// Unsold Items / Total Inventory Items.
+	measure 'Unsold Rate (%)' = DIVIDE([Unsold Items], [Total Inventory Items], 0)
+		formatString: 0.0%
+		displayFolder: Inventory Analysis
+		lineageTag: cfbde37e-5b41-4efd-96c9-cf957cf70812
+
+	/// Pending Sale Items / Total Inventory Items.
+	measure 'Pending Sale Rate (%)' = DIVIDE([Pending Sale Items], [Total Inventory Items], 0)
+		formatString: 0.0%
+		displayFolder: Inventory Analysis
+		lineageTag: e956b274-52f9-4863-bdd9-df940664d22f
+
+	/// Total inventory_cost semua unit (biaya, bukan harga retail).
+	measure 'Total Inventory Cost' = SUM('vw_inventory_distribution'[inventory_cost])
+		formatString: $#,0.00
+		displayFolder: Inventory Analysis
+		lineageTag: 1570e248-c3f6-4ab3-ba34-a3d0a30bfaed
+
+	/// Total inventory_cost unit berstatus Unsold (biaya, bukan nilai jual).
+	measure 'Unsold Inventory Value' =
+			CALCULATE(
+			    [Total Inventory Cost],
+			    KEEPFILTERS('vw_inventory_distribution'[inventory_status] = "Unsold")
+			)
+		formatString: $#,0.00
+		displayFolder: Inventory Analysis
+		lineageTag: 54274362-fe9f-4aaa-83de-ea71d1b10c08
+
+	/// Total inventory_cost unit berstatus Sold.
+	measure 'Sold Inventory Cost' =
+			CALCULATE(
+			    [Total Inventory Cost],
+			    KEEPFILTERS('vw_inventory_distribution'[inventory_status] = "Sold")
+			)
+		formatString: $#,0.00
+		displayFolder: Inventory Analysis
+		lineageTag: 1ea3f495-4ceb-4c6c-a2b8-da71ca7b46c4
+
+	/// Jumlah unit inventori berdasarkan inventory_date (tanggal diterima). Pakai dengan sumbu inventory_date, bukan sold_date.
+	measure 'Inventory Items Created' =
+			CALCULATE(
+			    [Total Inventory Items],
+			    KEEPFILTERS('vw_inventory_distribution'[inventory_date] <> BLANK())
+			)
+		formatString: #,0
+		displayFolder: Inventory Analysis
+		lineageTag: a20140f3-411e-4ff5-9b33-cb4aa607687f
+
+	/// Jumlah unit berstatus Sold berdasarkan sold_date. Pakai dengan sumbu sold_date. Pending Sale tidak dihitung.
+	measure 'Sold Items by Date' =
+			CALCULATE(
+			    [Total Inventory Items],
+			    KEEPFILTERS('vw_inventory_distribution'[inventory_status] = "Sold"),
+			    KEEPFILTERS('vw_inventory_distribution'[sold_date] <> BLANK())
+			)
+		formatString: #,0
+		displayFolder: Inventory Analysis
+		lineageTag: 9b0b6d6c-5016-4eaa-aea7-f2213b23830d
+
+	/// Total Inventory Cost / Total Inventory Items.
+	measure 'Average Inventory Cost' = DIVIDE([Total Inventory Cost], [Total Inventory Items], 0)
+		formatString: $#,0.00
+		displayFolder: Inventory Analysis
+		lineageTag: c491696f-a837-4d79-881d-de66c02aa86b
+
+	/// Porsi unit inventori sebuah distribution center terhadap total DC yang terpilih.
+	measure 'Distribution Center Contribution (%)' =
+			DIVIDE(
+			    [Total Inventory Items],
+			    CALCULATE([Total Inventory Items], ALLSELECTED('vw_inventory_distribution'[distribution_center_name])),
+			    0
+			)
+		formatString: 0.0%
+		displayFolder: Inventory Analysis
+		lineageTag: 1315788b-9d97-4318-a079-f751772f654b
+
+	measure 'Estimated COGS' = 'DAX Measure'[Total Revenue] - 'DAX Measure'[Gross Margin]
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: cd9479f0-c7b0-450c-b013-1b7b7ec3feb6
+
+	column Column1
+		dataType: string
+		lineageTag: fffb3fc6-91a4-4218-8f97-2b4b2da51c2e
+		summarizeBy: none
+		sourceColumn: Column1
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'DAX Measure' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

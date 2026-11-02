@@ -1,0 +1,173 @@
+table vw_customer_retention
+	lineageTag: e2e97e3f-7ea8-4127-b6a0-73d2794b8746
+
+	column order_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 7babfa7b-2c90-4805-990d-121597a1b57d
+		summarizeBy: sum
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column user_id
+		dataType: int64
+		formatString: 0
+		lineageTag: a8745736-3c3d-4521-b97e-abcef42e65b2
+		summarizeBy: sum
+		sourceColumn: user_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_status
+		dataType: string
+		lineageTag: e0d0ebbc-59a6-4a6a-980f-eafdb3b9d1e9
+		summarizeBy: none
+		sourceColumn: order_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_created_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c194894d-06f6-40aa-b965-2f4ed80f86d8
+		summarizeBy: none
+		sourceColumn: order_created_at
+
+		variation Variation
+			isDefault
+			relationship: 99777a12-c4d9-4c49-82ea-886b2f5999cd
+			defaultHierarchy: LocalDateTable_04a0ef09-1318-49a7-879b-dae22e7fa098.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 56f4c570-53a9-47e7-913c-c8eb01c956ec
+		summarizeBy: none
+		sourceColumn: order_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column order_month
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: b33b2932-8d3f-4085-9d54-37e6adbddd84
+		summarizeBy: none
+		sourceColumn: order_month
+
+		variation Variation
+			isDefault
+			relationship: 35a16eeb-27ee-4c48-a1da-aad8a6b8e1bf
+			defaultHierarchy: LocalDateTable_ecc2041f-2997-404e-85b5-2a9659eaffac.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column cohort_month
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 068b47f5-8728-4bfc-8d40-bd276aedb4c9
+		summarizeBy: none
+		sourceColumn: cohort_month
+
+		variation Variation
+			isDefault
+			relationship: d04fe67c-6276-4ce3-b4d9-107deb3bda65
+			defaultHierarchy: LocalDateTable_3e386f9b-b5c0-4338-9a94-d94eba53a08b.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column cohort_month_index
+		dataType: int64
+		formatString: 0
+		lineageTag: dc4edd5b-a62f-490a-9ea1-492828b80857
+		summarizeBy: sum
+		sourceColumn: cohort_month_index
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_order_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 81b4975d-c22f-4d53-9929-92a5f4318d2c
+		summarizeBy: sum
+		sourceColumn: customer_order_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_order_sequence
+		dataType: int64
+		formatString: 0
+		lineageTag: 0323c3e1-3fa3-4191-ba68-db027aa8421f
+		summarizeBy: sum
+		sourceColumn: customer_order_sequence
+
+		annotation SummarizationSetBy = Automatic
+
+	column age
+		dataType: int64
+		formatString: 0
+		lineageTag: edaa4d5c-b269-4cd6-a44e-fb10bc513d3c
+		summarizeBy: sum
+		sourceColumn: age
+
+		annotation SummarizationSetBy = Automatic
+
+	column age_segment
+		dataType: string
+		lineageTag: debb9bfe-692d-4ee5-88e9-94e58864ea87
+		summarizeBy: none
+		sourceColumn: age_segment
+
+		annotation SummarizationSetBy = Automatic
+
+	column gender
+		dataType: string
+		lineageTag: 09b14644-7113-49c6-93a1-da9edc6b7c23
+		summarizeBy: none
+		sourceColumn: gender
+
+		annotation SummarizationSetBy = Automatic
+
+	column traffic_source
+		dataType: string
+		lineageTag: ce6a9fc5-66b6-478f-9939-08758860263b
+		summarizeBy: none
+		sourceColumn: traffic_source
+
+		annotation SummarizationSetBy = Automatic
+
+	column country
+		dataType: string
+		lineageTag: ab82a9dc-61ae-4743-9a3b-59b5f0ea928c
+		summarizeBy: none
+		sourceColumn: country
+
+		annotation SummarizationSetBy = Automatic
+
+	column state
+		dataType: string
+		lineageTag: eba550b7-db7e-42c6-a015-ac3b4cbe5cf2
+		summarizeBy: none
+		sourceColumn: state
+
+		annotation SummarizationSetBy = Automatic
+
+	partition vw_customer_retention = m
+		mode: import
+		source =
+				let
+				    Source = GoogleBigQuery.Database([Implementation="2.0"]),
+				    #"causal-smoke-458206-c3_Database" = Source{[Name="causal-smoke-458206-c3",Kind="Database"]}[Data],
+				    the_look_ecommerce_Schema = #"causal-smoke-458206-c3_Database"{[Name="the_look_ecommerce",Kind="Schema"]}[Data],
+				    vw_customer_retention_View = the_look_ecommerce_Schema{[Name="vw_customer_retention",Kind="View"]}[Data]
+				in
+				    vw_customer_retention_View
+

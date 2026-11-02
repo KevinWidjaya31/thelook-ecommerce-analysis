@@ -1,0 +1,85 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "b28fee8cebc37362d776",
+  "position": {
+    "x": 1003.3333333333334,
+    "y": 705,
+    "z": 5000,
+    "height": 308.33333333333337,
+    "width": 870,
+    "tabOrder": 5000
+  },
+  "visual": {
+    "visualType": "columnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "retention_by_traffic_source"
+                    }
+                  },
+                  "Property": "traffic_source"
+                }
+              },
+              "queryRef": "retention_by_traffic_source.traffic_source",
+              "nativeQueryRef": "traffic_source",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "retention_by_traffic_source"
+                        }
+                      },
+                      "Property": "repeat_purchase_rate"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "CountNonNull(retention_by_traffic_source.repeat_purchase_rate)",
+              "nativeQueryRef": "Sum of repeat_purchase_rate"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "retention_by_traffic_source"
+                      }
+                    },
+                    "Property": "repeat_purchase_rate"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

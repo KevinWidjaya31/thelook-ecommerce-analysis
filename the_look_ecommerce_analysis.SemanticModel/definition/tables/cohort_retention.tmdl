@@ -1,0 +1,84 @@
+table cohort_retention
+	isHidden
+	lineageTag: a9341d8a-3f6f-4562-9737-4128d3b606b2
+
+	column cohort_month
+		dataType: dateTime
+		isHidden
+		formatString: Long Date
+		lineageTag: 32fb37ec-2e64-4829-a07a-3d244c7e9f04
+		summarizeBy: none
+		sourceColumn: cohort_month
+
+		variation Variation
+			isDefault
+			relationship: 9bae2093-c06d-4ff8-949d-1cec55f866ef
+			defaultHierarchy: LocalDateTable_0697b699-777f-40c7-96d0-faa6a5079fe9.'Date Hierarchy'
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column month_number
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8d9e1c59-1995-4939-8f24-80e4807a10c5
+		summarizeBy: sum
+		sourceColumn: month_number
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column cohort_customers
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c0987a54-4bc0-4ded-81e3-44eb0992916b
+		summarizeBy: sum
+		sourceColumn: cohort_customers
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column active_customers
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c009a6cf-fcc2-4f86-aecc-507f52dc1706
+		summarizeBy: sum
+		sourceColumn: active_customers
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column retention_rate
+		dataType: double
+		isHidden
+		formatString: 0%;-0%;0%
+		lineageTag: 09d1ba44-1ce9-4d5f-8f72-d92166c57683
+		summarizeBy: sum
+		sourceColumn: retention_rate
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition cohort_retention = m
+		mode: import
+		source =
+				let
+				    Source = GoogleBigQuery.Database([Implementation="2.0"]),
+				    #"causal-smoke-458206-c3_Database" = Source{[Name="causal-smoke-458206-c3",Kind="Database"]}[Data],
+				    the_look_ecommerce_Schema = #"causal-smoke-458206-c3_Database"{[Name="the_look_ecommerce",Kind="Schema"]}[Data],
+				    cohort_retention_View = the_look_ecommerce_Schema{[Name="cohort_retention",Kind="View"]}[Data]
+				in
+				    cohort_retention_View
+
+	changedProperty = IsHidden
+

@@ -1,0 +1,82 @@
+table repeat_purchase_kpi
+	lineageTag: ba1e07e2-8a59-445e-9ac2-02d3110174d2
+
+	column user_id
+		dataType: int64
+		formatString: 0
+		lineageTag: fb1957fa-e008-4ca5-a09c-4b64103c4b57
+		summarizeBy: sum
+		sourceColumn: user_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column completed_orders
+		dataType: int64
+		formatString: 0
+		lineageTag: 26ec4cea-bea0-4a1e-b3e7-18e775f7a60a
+		summarizeBy: sum
+		sourceColumn: completed_orders
+
+		annotation SummarizationSetBy = Automatic
+
+	column first_order_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: cd7540a7-9788-4684-990b-2183e95a01ce
+		summarizeBy: none
+		sourceColumn: first_order_date
+
+		variation Variation
+			isDefault
+			relationship: 798440d2-47ef-4488-99ae-3ef8cf887c52
+			defaultHierarchy: LocalDateTable_d7b46ece-8e9c-4b74-89c4-8866ed09fda6.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column most_recent_order_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 447b12e8-dc19-4339-a69b-0da4f0c249cf
+		summarizeBy: none
+		sourceColumn: most_recent_order_date
+
+		variation Variation
+			isDefault
+			relationship: 074d2cb4-83c8-4afe-8cc4-ce7f0ebf21f4
+			defaultHierarchy: LocalDateTable_57420026-06bd-4ac7-b49b-a181a06fde62.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column days_between_first_and_latest
+		dataType: int64
+		formatString: 0
+		lineageTag: ea8033fa-5ea3-4d34-b41b-9cc2a98d1af8
+		summarizeBy: sum
+		sourceColumn: days_between_first_and_latest
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_repeat_customer
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: c7df56b8-048e-4cad-aa64-05a207b0cc77
+		summarizeBy: none
+		sourceColumn: is_repeat_customer
+
+		annotation SummarizationSetBy = Automatic
+
+	partition repeat_purchase_kpi = m
+		mode: import
+		source =
+				let
+				    Source = GoogleBigQuery.Database([Implementation="2.0"]),
+				    #"causal-smoke-458206-c3_Database" = Source{[Name="causal-smoke-458206-c3",Kind="Database"]}[Data],
+				    the_look_ecommerce_Schema = #"causal-smoke-458206-c3_Database"{[Name="the_look_ecommerce",Kind="Schema"]}[Data],
+				    repeat_purchase_kpi_View = the_look_ecommerce_Schema{[Name="repeat_purchase_kpi",Kind="View"]}[Data]
+				in
+				    repeat_purchase_kpi_View
+
