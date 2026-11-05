@@ -40,7 +40,237 @@ Berdasarkan permasalahan tersebut, project ini memiliki beberapa tujuan:
 4. Mengevaluasi kondisi inventory dan distribusi persediaan.
 5. Menyajikan hasil analisis dalam bentuk interactive dashboard untuk mendukung pengambilan keputusan bisnis.
 
-## 3. Dataset & Data Source
+## 3. SQL Queries & Analytical Views
+
+SQL digunakan untuk menggabungkan, mentransformasi, dan menyiapkan data dari TheLook Ecommerce menjadi analytical views sesuai kebutuhan setiap halaman dashboard.
+
+Empat views yang dikembangkan meliputi:
+
+1. **Executive Overview:** Menyediakan data transaksi, customer information, revenue, dan gross margin.
+2. **Product Performance:** Menyediakan informasi performa produk, kategori, brand, sales, dan margin.
+3. **Customer Retention:** Menyediakan informasi customer cohort, order sequence, dan repeat purchase.
+4. **Inventory & Distribution:** Menyediakan informasi status inventory, inventory value, dan distribution center.
+
+### 1. Executive Overview
+
+View ini menggabungkan data orders, users, order items, dan products untuk menghasilkan metrik utama performa bisnis.
+
+<details>
+<summary><strong>View: vw_executive_overview</strong></summary>
+
+```sql
+SELECT
+    o.order_id,
+    o.user_id,
+    o.status AS order_status,
+    o.gender AS order_gender,
+    o.created_at AS order_created_at,
+    DATE(o.created_at) AS order_date,
+    DATE_TRUNC(DATE(o.created_at), MONTH) AS order_month,
+    o.shipped_at,
+    o.delivered_at,
+    o.returned_at,
+    o.num_of_item AS reported_item_count,
+
+    u.age,
+    u.gender AS customer_gender,
+    u.traffic_source,
+    u.country,
+    u.state,
+    u.city,
+
+    COALESCE(oi.item_count, 0) AS item_count,
+    COALESCE(oi.item_sales_value, 0) AS item_sales_value,
+    COALESCE(oi.item_cost_value, 0) AS item_cost_value,
+    COALESCE(oi.item_sales_value, 0)
+        - COALESCE(oi.item_cost_value, 0) AS item_margin_value
+
+FROM `bigquery-public-data.thelook_ecommerce.orders` AS o
+
+LEFT JOIN `bigquery-public-data.thelook_ecommerce.users` AS u
+    ON o.user_id = u.id
+
+LEFT JOIN (
+    SELECT
+        oi.order_id,
+        COUNT(DISTINCT oi.id) AS item_count,
+        SUM(oi.sale_price) AS item_sales_value,
+        SUM(p.cost) AS item_cost_value
+    FROM `bigquery-public-data.thelook_ecommerce.order_items` AS oi
+    LEFT JOIN `bigquery-public-data.thelook_ecommerce.products` AS p
+        ON oi.product_id = p.id
+    GROUP BY oi.order_id
+) AS oi
+    ON o.order_id = oi.order_id;
+```
+
+</details>
+
+### 2. Product Performance
+
+View ini menggabungkan order items, orders, products, dan users untuk menganalisis kontribusi penjualan, performa kategori, brand, dan profitability produk.
+
+<details>
+<summary><strong>View: vw_product_performance</strong></summary>
+
+```sql
+SELECT
+    oi.id AS order_item_id,
+    oi.order_id,
+    oi.user_id,
+    oi.product_id,
+    oi.inventory_item_id,
+
+    oi.status AS item_status,
+    o.status AS order_status,
+    oi.created_at AS item_created_at,
+    DATE(oi.created_at) AS item_date,
+    DATE_TRUNC(DATE(oi.created_at), MONTH) AS item_month,
+
+    oi.sale_price,
+    p.cost AS product_cost,
+    oi.sale_price - p.cost AS item_margin_value,
+
+    p.name AS product_name,
+    p.category AS product_category,
+    p.brand AS product_brand,
+    p.department AS product_department,
+    p.retail_price,
+    p.sku,
+    p.distribution_center_id,
+
+    u.traffic_source,
+    u.age,
+    u.gender AS customer_gender,
+    u.country,
+    u.state
+
+FROM `bigquery-public-data.thelook_ecommerce.order_items` AS oi
+
+LEFT JOIN `bigquery-public-data.thelook_ecommerce.orders` AS o
+    ON oi.order_id = o.order_id
+
+LEFT JOIN `bigquery-public-data.thelook_ecommerce.products` AS p
+    ON oi.product_id = p.id
+
+LEFT JOIN `bigquery-public-data.thelook_ecommerce.users` AS u
+    ON oi.user_id = u.id;
+```
+
+</details>
+
+### 3. Customer Retention
+
+View ini menggunakan window functions untuk mengidentifikasi cohort pelanggan, urutan transaksi, dan jumlah pesanan setiap pelanggan.
+
+<details>
+<summary><strong>View: vw_customer_retention</strong></summary>
+
+```sql
+SELECT
+    o.order_id,
+    o.user_id,
+    o.status AS order_status,
+    o.created_at AS order_created_at,
+    DATE(o.created_at) AS order_date,
+    DATE_TRUNC(DATE(o.created_at), MONTH) AS order_month,
+
+    DATE_TRUNC(
+        DATE(MIN(o.created_at) OVER (PARTITION BY o.user_id)),
+        MONTH
+    ) AS cohort_month,
+
+    DATE_DIFF(
+        DATE_TRUNC(DATE(o.created_at), MONTH),
+        DATE_TRUNC(
+            DATE(MIN(o.created_at) OVER (PARTITION BY o.user_id)),
+            MONTH
+        ),
+        MONTH
+    ) AS cohort_month_index,
+
+    COUNT(*) OVER (
+        PARTITION BY o.user_id
+    ) AS customer_order_count,
+
+    ROW_NUMBER() OVER (
+        PARTITION BY o.user_id
+        ORDER BY o.created_at, o.order_id
+    ) AS customer_order_sequence,
+
+    u.age,
+    CASE
+        WHEN u.age < 25 THEN 'Under 25'
+        WHEN u.age < 35 THEN '25-34'
+        WHEN u.age < 45 THEN '35-44'
+        WHEN u.age < 55 THEN '45-54'
+        ELSE '55+'
+    END AS age_segment,
+
+    u.gender,
+    u.traffic_source,
+    u.country,
+    u.state
+
+FROM `bigquery-public-data.thelook_ecommerce.orders` AS o
+
+LEFT JOIN `bigquery-public-data.thelook_ecommerce.users` AS u
+    ON o.user_id = u.id;
+```
+
+</details>
+
+### 4. Inventory & Distribution
+
+View ini menggabungkan inventory items, distribution centers, dan products untuk menganalisis status persediaan dan distribusi inventory.
+
+<details>
+<summary><strong>View: vw_inventory_analysis</strong></summary>
+
+```sql
+SELECT
+    ii.id AS inventory_item_id,
+    ii.product_id,
+    ii.created_at AS inventory_created_at,
+    DATE(ii.created_at) AS inventory_date,
+    ii.sold_at,
+    DATE(ii.sold_at) AS sold_date,
+
+    CASE
+        WHEN ii.sold_at IS NULL THEN 'Unsold'
+        WHEN ii.sold_at <= CURRENT_TIMESTAMP() THEN 'Sold'
+        ELSE 'Pending Sale Timestamp'
+    END AS inventory_status,
+
+    ii.cost AS inventory_cost,
+    ii.product_category,
+    ii.product_name,
+    ii.product_brand,
+    ii.product_retail_price,
+    ii.product_department,
+    ii.product_sku,
+    ii.product_distribution_center_id,
+
+    dc.name AS distribution_center_name,
+    dc.latitude AS distribution_center_latitude,
+    dc.longitude AS distribution_center_longitude,
+
+    p.category AS current_product_category,
+    p.brand AS current_product_brand
+
+FROM `bigquery-public-data.thelook_ecommerce.inventory_items` AS ii
+
+LEFT JOIN `bigquery-public-data.thelook_ecommerce.distribution_centers` AS dc
+    ON ii.product_distribution_center_id = dc.id
+
+LEFT JOIN `bigquery-public-data.thelook_ecommerce.products` AS p
+    ON ii.product_id = p.id;
+```
+
+</details>
+
+
+## 4. Dataset & Data Source
 
 Dataset yang digunakan berasal dari **TheLook Ecommerce**, yaitu dataset publik yang tersedia melalui Google BigQuery.
 
@@ -61,7 +291,7 @@ Dataset terdiri dari tujuh tabel utama:
 
 Dataset ini merupakan data sintetis yang dibuat untuk kebutuhan analisis dan pembelajaran. Oleh karena itu, hasil analisis digunakan sebagai simulasi studi kasus bisnis, bukan sebagai representasi performa perusahaan e-commerce yang sebenarnya.
 
-## 4. Project Workflow
+## 5. Project Workflow
 
 Project dikerjakan melalui lima tahapan utama.
 
@@ -247,7 +477,7 @@ Dashboard dirancang dengan pendekatan modern corporate minimalist menggunakan:
 
 Tujuan utama visualisasi adalah menyajikan informasi secara ringkas, mudah dipahami, dan relevan dengan kebutuhan analisis bisnis.
 
-## 5. Dashboard Preview
+## 6. Dashboard Preview
 
 Dashboard terdiri dari empat halaman analisis.
 
@@ -271,7 +501,7 @@ Menyajikan analisis kondisi persediaan dan distribusi inventory.
 
 ![Inventory & Distribution](pages/Inventory-Distribution.png)
 
-## 6. Business Insights & Recommendations
+## 7. Business Insights & Recommendations
 
 Berdasarkan hasil analisis, dashboard dapat digunakan untuk mengidentifikasi beberapa area yang perlu diperhatikan oleh bisnis.
 
@@ -335,7 +565,7 @@ Berikut rekomendasi yang dapat dipertimbangkan berdasarkan masing-masing area an
 
 **Note:** Rekomendasi di atas merupakan usulan analitis berdasarkan metrik yang tersedia. Implementasi bisnis memerlukan validasi lebih lanjut terhadap kondisi operasional perusahaan.
 
-## 7. Tools & Technologies
+## 8. Tools & Technologies
 
 | Tools | Usage |
 |---|---|
@@ -346,7 +576,7 @@ Berikut rekomendasi yang dapat dipertimbangkan berdasarkan masing-masing area an
 | Power Query | Data transformation and preparation |
 | Git & GitHub | Project version control and documentation |
 
-## 8. Skills Demonstrated
+## 9. Skills Demonstrated
 
 Melalui project ini, beberapa kemampuan Data Analytics yang diterapkan meliputi:
 
@@ -358,52 +588,7 @@ Melalui project ini, beberapa kemampuan Data Analytics yang diterapkan meliputi:
 - **Data Visualization:** Mengembangkan interactive dashboard menggunakan Power BI.
 - **Analytical Thinking:** Menginterpretasikan hasil analisis dan menyusun business recommendations.
 
-## 9. Repository Structure
-
-Struktur repository project:
-
-```text
-thelook-ecommerce-analysis/
-│
-├── SQL/
-│   ├── 01_create_snapshot.sql
-│   ├── 02_create_views.sql
-│   └── 03_data_validation.sql
-│
-├── PowerBI/
-│   ├── thelook-ecommerce-analysis.pbip
-│   ├── thelook-ecommerce-analysis.Report/
-│   └── thelook-ecommerce-analysis.SemanticModel/
-│
-├── screenshots/
-│   ├── executive-overview.png
-│   ├── product-analysis.png
-│   ├── customer-analysis.png
-│   └── inventory-distribution.png
-│
-└── README.md
-```
-
-Nama file dan folder dapat disesuaikan dengan struktur repository yang digunakan.
-
-## 10. How to Use This Project
-
-Untuk mempelajari atau menjalankan project ini:
-
-1. Clone repository dari GitHub.
-2. Akses dataset TheLook Ecommerce melalui Google BigQuery.
-3. Jalankan SQL scripts sesuai urutan untuk membuat snapshot dan analytical views.
-4. Hubungkan Power BI ke tabel atau views yang telah dibuat di BigQuery.
-5. Buka file Power BI Project (`.pbip`) menggunakan Microsoft Power BI Desktop.
-6. Sesuaikan koneksi data dan lakukan refresh apabila diperlukan.
-7. Gunakan slicers dan visualisasi untuk mengeksplorasi hasil analisis.
-
-**Requirements:**
-- Google account dengan akses Google BigQuery.
-- Microsoft Power BI Desktop.
-- Akses ke dataset publik TheLook Ecommerce.
-
-## 11. Project Limitations
+## 10. Project Limitations
 
 Beberapa hal yang perlu diperhatikan ketika menggunakan hasil analisis:
 
@@ -413,7 +598,7 @@ Beberapa hal yang perlu diperhatikan ketika menggunakan hasil analisis:
 - Beberapa metrik, seperti return rate dan cancel rate, perlu diinterpretasikan berdasarkan definisi dan denominator yang digunakan.
 - Analisis inventory menggambarkan kondisi berdasarkan informasi yang tersedia pada dataset, bukan jaminan ketersediaan stok operasional secara real-time.
 
-## 12. Author
+## 11. Author
 
 **Kevin Widjaya**
 
@@ -424,7 +609,7 @@ Universitas Bunda Mulia
 Interested in Data Analytics, Business Intelligence, and Data Visualization.
 
 - GitHub: https://github.com/KevinWidjaya31
-- LinkedIn: [https://www.linkedin.com/in/kevin-widjaya/]
+- LinkedIn: https://www.linkedin.com/in/kevin-widjaya/
 
 ---
 
@@ -432,4 +617,3 @@ Interested in Data Analytics, Business Intelligence, and Data Visualization.
 **Domain:** E-commerce  
 **Focus:** Business Intelligence & Data Analytics  
 **Tools:** BigQuery, SQL, Microsoft Power BI, DAX
-
